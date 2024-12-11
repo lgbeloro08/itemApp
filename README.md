@@ -12,3 +12,4 @@ future development:
   - image integration
   - user authentication: sign up and sign in
   - better front-end implementation
+  - debugging console output
