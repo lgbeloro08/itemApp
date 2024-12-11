@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Inventory Management System</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Item List</h2>
+            <a href="/items/new-item" class="btn btn-primary">Add Item</a>
+        </div>
+
+        <div class="mb-3">
+            <input type="text" id="filterInput" class="form-control" placeholder="Search:" onkeyup="filterItems()">
+        </div>
+        
+        <div class="mb-3">
+            <label for="sortSelect" class="form-label">Sort by:</label>
+            <select id="sortSelect" class="form-select" onchange="sortItems()">
+                <option value="name">Name</option>
+                <option value="category">Category</option>
+                <option value="quantity">Quantity</option>
+                <option value="price">Price</option>
+                <option value="createdAt">Created At</option>
+            </select>
+        </div>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% items.forEach((item, index)=> { %>
+                    <tr>
+                        <td><%= index +1 %></td>
+                        <td><%= item._id %></td>
+                        <td><%= item.name %></td>
+                        <td><%= item.category %></td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.price %></td>
+                        <td><%= item.description %></td>
+                        <% const date=new Date(item.createdAt); %>
+                        <% const formattedDate=`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`; %>
+                        <td><%= formattedDate %></td>
+                        <td>
+                            <a href="/items/<%= item._id %>" class="btn btn-sm btn-info text-white">View</a>
+                            <a href="/items/<%= item._id %>/edit" class="btn btn-sm btn-warning text-dark">Update</a>
+                            <a href="/items/<%= item._id %>/delete" class="btn btn-sm btn-danger text-white">Delete</a>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function filterItems() {
+            const input = document.getElementById('filterInput');
+            const filter = input.value.toLowerCase();
+            const table = document.querySelector('table tbody');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const cellValue = cells[j].textContent || cells[j].innerText;
+                        if (cellValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                rows[i].style.display = found ? "" : "none";
+            }
+        }
+
+        function sortItems() {
+            const select = document.getElementById('sortSelect');
+            const table = document.querySelector('table tbody');
+            const rows = Array.from(table.getElementsByTagName('tr'));
+            const sortBy = select.value;
+
+            rows.sort((a, b) => {
+                const aValue = a.cells[getColumnIndex(sortBy)].innerText;
+                const bValue = b.cells[getColumnIndex(sortBy)].innerText;
+
+                if (sortBy === 'createdAt') {
+                    return new Date(aValue) - new Date(bValue);
+                } else if (!isNaN(aValue) && !isNaN(bValue)) {
+                    return parseFloat(aValue) - parseFloat(bValue);
+                } else {
+                    return aValue.localeCompare(bValue);
+                }
+            });
+
+            // Clear the table and append sorted rows
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        function getColumnIndex(columnName) {
+            switch (columnName) {
+                case 'name': return 2;
+                case 'category': return 3;
+                case 'quantity': return 4;
+                case 'price': return 5;
+                case 'createdAt': return 7;
+                default: return 0;
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+</body>
+</html>
