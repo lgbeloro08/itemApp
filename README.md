@@ -3,11 +3,12 @@ capstone backend project for Bayan Academy backend dev program
 
 features:
   - basic CRUD operation
-  - search function
-  - column field sorting functionality
+  - search bar
+  - column field ascending sort functionality
 
 future development:
   - top-bottom sorting
-  - defaulting sorting
+  - defaulting sorts
   - image integration
-  - user authentication implementation
+  - user authentication: sign up and sign in
+  - better front-end implementation
